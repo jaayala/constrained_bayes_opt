@@ -166,12 +166,13 @@ class ActionSpace(object):
         self._S = np.ones(len(self._allActions), dtype=bool)
         for i in range(self.n_constraints):
             if self.constr_greater[i] == 1:
-                S_aux = self._upper[:,i+1] > self.constraint_thres[i]
+                S_aux = self._lower[:,i+1] > self.constraint_thres[i]
             else:
-                S_aux = self._lower[:,i+1] < self.constraint_thres[i]
+                S_aux = self._upper[:,i+1] < self.constraint_thres[i]
             self._S = np.logical_and(self._S, S_aux)
             
-        self._S[self._S0_idx] = True
+        if np.sum(self._S) == 0 :
+            self._S[self._S0_idx] = True
       
 
     def suggest_ucb(self, context, gp_list):
